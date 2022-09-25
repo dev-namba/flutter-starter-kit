@@ -1,0 +1,34 @@
+name: flutter_analyze
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-11, macos-12]
+        flutter-version: [stable]
+
+    name: flutter_analyze
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: set up repository
+        uses: actions/checkout@v3
+      - name: set up flutter
+        uses: subosito/flutter-action@v2.6.1
+        with:
+          channel: ${{ matrix.flutter-version }}
+          cache: false
+      - name: flutter doctor
+        run: flutter doctor -v
+      - name: flutter pub get
+        run: flutter pub get
+      - name: flutter analyze
+        run: flutter analyze
